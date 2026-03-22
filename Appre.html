@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Appreciation Mock Exam - Unit 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #673ab7; --bg: #f0ebf8; --text: #202124; --card-bg: #ffffff; --border: #dadce0; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        #exam-container { width: 100%; max-width: 770px; }
+        .header-card { background: var(--card-bg); border-top: 10px solid var(--primary); border-radius: 8px; padding: 24px; margin-bottom: 12px; border: 1px solid var(--border); }
+        .header-card h1 { margin: 0 0 10px 0; font-size: 32px; font-weight: 400; }
+        .question-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 12px; }
+        .question-text { font-size: 16px; margin-bottom: 16px; font-weight: 500; }
+        .option { display: flex; align-items: center; margin: 10px 0; cursor: pointer; padding: 8px; border-radius: 4px; }
+        .option:hover { background-color: #f8f9fa; }
+        input[type="radio"] { margin-right: 12px; accent-color: var(--primary); }
+        .btn-submit { background-color: var(--primary); color: white; border: none; padding: 10px 24px; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 10px; }
+        #results { display: none; margin-top: 20px; }
+        .score-display { font-size: 24px; font-weight: 500; margin-bottom: 20px; text-align: center; color: var(--primary); }
+        .correct { background-color: #e6f4ea !important; border: 1px solid #1e8e3e; }
+        .incorrect { background-color: #fce8e6 !important; border: 1px solid #d93025; }
+        .feedback { font-size: 12px; margin-top: 5px; color: #5f6368; }
+        .correct-answer-text { font-weight: bold; color: #1e8e3e; }
+    </style>
+</head>
+<body>
+    <div id="exam-container">
+        <div class="header-card">
+            <h1>Unit 3: The Artist and His Medium</h1>
+            <p>Mock Exam - 60 Items. Based on Art Appreciation Course Materials.</p>
+        </div>
+        <form id="quiz-form"></form>
+        <button type="button" class="btn-submit" onclick="submitExam()">Submit</button>
+        <div id="results">
+            <div class="header-card">
+                <div class="score-display" id="final-score"></div>
+                <button class="btn-submit" onclick="window.location.reload()">Retake Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "What is at the heart of making art, referring to both the process and the final product?", a: ["Production", "Curation", "Technique", "Medium"], c: 0 },
+            { q: "Which of the following is NOT one of the three components of the art production process?", a: ["Medium", "Technique", "Curation", "Marketing"], c: 3 },
+            { q: "This refers to the material or substance with which the artist creates his object.", a: ["Technique", "Medium", "Curation", "Process"], c: 1 },
+            { q: "Which art form is considered a fundamental skill needed in the visual arts?", a: ["Painting", "Sculpture", "Drawing", "Print Making"], c: 2 },
+            { q: "Which drawing medium is made of graphite and comes in various hardness levels?", a: ["Charcoal", "Ink", "Pastel", "Pencils"], c: 3 },
+            { q: "Which technique uses a series of thin parallel lines that run in the same direction?", a: ["Cross-hatching", "Hatching", "Stippling", "Blending"], c: 1 },
+            { q: "What technique involves using a finger or paper stump to gradually change tone from dark to light?", a: ["Hatching", "Blending", "Sgraffito", "Impasto"], c: 1 },
+            { q: "This drawing medium is composed of dry pigment held together by a gum binder.", a: ["Ink", "Charcoal", "Pastel", "Graphite"], c: 2 },
+            { q: "Which pastel technique involves applying a thick deposit of pastel and then scraping it off?", a: ["Impasto", "Scumbling", "Sgraffito", "Feathering"], c: 2 },
+            { q: "Charcoal is an organic medium that comes from what?", a: ["Burnt wood", "Ground stones", "Crushed insects", "Synthetic dyes"], c: 0 },
+            { q: "What is the most common surface used in two-dimensional art?", a: ["Canvas", "Wood", "Paper", "Cloth"], c: 2 },
+            { q: "Which type of paper has a very smooth surface?", a: ["Rough Paper", "Cold-pressed paper", "Hot-pressed paper", "Canvas paper"], c: 2 },
+            { q: "What is the process of applying paint onto a smooth surface like canvas or wood?", a: ["Drawing", "Painting", "Sculpting", "Etching"], c: 1 },
+            { q: "In which painting medium are pigments mixed with water and applied to paper?", a: ["Oil Paints", "Tempera", "Watercolor", "Acrylic"], c: 2 },
+            { q: "Which medium uses egg yolk as a binder?", a: ["Fresco", "Tempera", "Gouache", "Oil Paints"], c: 1 },
+            { q: "What is a modern painting medium that uses synthetic acrylic emulsion as a binder?", a: ["Acrylic", "Watercolor", "Oil", "Encaustic"], c: 0 },
+            { q: "Which technique uses small tiles or irregularly cut pieces of glass to decorate walls or floors?", a: ["Collage", "Mosaic", "Stenciling", "Fresco"], c: 1 },
+            { q: "Which 2D art form is created by gluing or pasting materials or found objects on a support?", a: ["Print Making", "Mosaic", "Collage", "Drawing"], c: 2 },
+            { q: "Which printmaking process involves cutting away parts of a surface so the 'raised' part produces the image?", a: ["Intaglio", "Surface Printing", "Relief Printing", "Lithography"], c: 2 },
+            { q: "The word 'Sculpture' originates from the Latin word 'sculpere', which means what?", a: ["To mold", "To carve", "To build", "To paint"], c: 1 },
+            { q: "Which type of sculpture can be viewed from all sides?", a: ["Relief", "Kinetic", "Freestanding", "Static"], c: 2 },
+            { q: "What do you call sculptures that project from a background?", a: ["Freestanding", "Relief", "Kinetic", "Installation"], c: 1 },
+            { q: "What type of sculpture is capable of movement by wind or water?", a: ["Relief", "Mobile", "Kinetic", "Abstract"], c: 2 },
+            { q: "Which sculpting process involves removing or cutting away pieces of material?", a: ["Additive", "Subtractive", "Substitution", "Casting"], c: 1 },
+            { q: "Which sculpting process is also known as casting and involves using a mold?", a: ["Additive", "Subtractive", "Substitution", "Carving"], c: 2 },
+            { q: "What is the art of designing buildings and structures for a definite function?", a: ["Curation", "Architecture", "Engineering", "Sculpture"], c: 1 },
+            { q: "Which construction principle makes use of two vertical supports spanned by a horizontal beam?", a: ["Arch", "Post and Lintel", "Cantilever", "Truss"], c: 1 },
+            { q: "The arch was an invention of which civilization?", a: ["Greeks", "Egyptians", "Romans", "Mayans"], c: 2 },
+            { q: "What is a succession of arches called?", a: ["Groin Vault", "Dome", "Barrel Vault", "Buttress"], c: 2 },
+            { q: "Which structure has the shape of an inverted cup?", a: ["Groin Vault", "Dome", "Truss", "Cantilever"], c: 1 },
+            { q: "What is a system of triangular forms assembled to form a rigid framework?", a: ["Buttress", "Truss", "Post and Lintel", "Arch"], c: 1 },
+            { q: "What structure uses a slab that extends horizontally into space beyond its supporting post?", a: ["Cantilever", "Dome", "Barrel Vault", "Truss"], c: 0 },
+            { q: "What is built as a support for a wall in architecture?", a: ["Lintel", "Buttress", "Post", "Vault"], c: 1 },
+            { q: "Which architectural material is favored for its durability and adaptability to sculptural treatment?", a: ["Lumber", "Stone", "Concrete", "Steel"], c: 1 },
+            { q: "What material allows for taller structures with less material compared to stone or wood?", a: ["Brick", "Concrete", "Iron and Steel", "Terra cotta"], c: 2 },
+            { q: "What is the art of combining spoken or written words into forms with artistic appeal?", a: ["Cinema", "Music", "Literature", "Drama"], c: 2 },
+            { q: "Which type of literature uses elaborate figurative language and is not real?", a: ["Non-fiction", "Biography", "Poetry", "Fiction"], c: 3 },
+            { q: "What do you call the art of combining sounds to express ideas and feelings?", a: ["Poetry", "Dance", "Music", "Drama"], c: 2 },
+            { q: "What is the highest female singing voice?", a: ["Contralto", "Mezzo-soprano", "Soprano", "Tenor"], c: 2 },
+            { q: "What is the highest adult male singing voice?", a: ["Bass", "Baritone", "Tenor", "Countertenor"], c: 2 },
+            { q: "Which male singing voice is low and rich in quality?", a: ["Tenor", "Baritone", "Bass", "Soprano"], c: 2 },
+            { q: "String instruments provide what in an orchestra?", a: ["Rhythm", "Percussion", "Basic orchestral sounds", "Melody only"], c: 2 },
+            { q: "Which instruments create sound by blowing into them?", a: ["Brass", "Percussion", "Woodwind", "Keyboard"], c: 2 },
+            { q: "Drums and cymbals belong to which instrument classification?", a: ["String", "Woodwind", "Brass", "Percussion"], c: 3 },
+            { q: "Which genre of music emerged from independent music in the 1980s?", a: ["Rock Music", "Alternative Music", "Pop", "Jazz"], c: 1 },
+            { q: "What is the expression of emotions through rhythmic man's gestures?", a: ["Music", "Dance", "Drama", "Cinema"], c: 1 },
+            { q: "Which dance type includes folk dances associated with national groups?", a: ["Social", "Ballet", "Ethnologic", "Musical Comedy"], c: 2 },
+            { q: "Which dance form originated in the royal courts of the Medieval era?", a: ["Ballroom", "Ballet", "Tap", "Contemporary"], c: 1 },
+            { q: "Which genre of literature is intended to be acted out or performed on stage?", a: ["Poetry", "Fiction", "Drama", "Non-fiction"], c: 2 },
+            { q: "Which combined art includes music, dance, painting, sculpture, and architecture?", a: ["Cinema", "Theater", "Opera", "Literature"], c: 1 },
+            { q: "What is considered literature's greatest dramatic genre?", a: ["Comedy", "Satire", "Tragedy", "Farce"], c: 2 },
+            { q: "Which genre emphasizes the battle between good and evil, where good always wins?", a: ["Tragedy", "Melodrama", "Satire", "Farce"], c: 1 },
+            { q: "Which genre portrays human weakness to pave the path to salvation?", a: ["Comedy", "Satire", "Melodrama", "Farce"], c: 1 },
+            { q: "What is a light humorous play focusing on jokes and exaggerated situations?", a: ["Tragedy", "Farce", "Satire", "Musical"], c: 1 },
+            { q: "What is a series of images projected to create the illusion of motion?", a: ["Photography", "Cinema", "Theater", "Graphic Arts"], c: 1 },
+            { q: "Which motion picture genre deals primarily with facts, not fiction?", a: ["Feature Films", "Animated movies", "Documentary movies", "Experimental films"], c: 2 },
+            { q: "Who handles the finances for a motion picture?", a: ["Director", "Screenwriter", "Producer", "Actor"], c: 2 },
+            { q: "Who develops the story and ideas for the screen?", a: ["Director", "Producer", "Screenwriter", "Actor"], c: 2 },
+            { q: "Who guides the actors and plans how the film should be portrayed?", a: ["Director", "Producer", "Screenwriter", "Editor"], c: 0 },
+            { q: "What is the process of making reproductions of graphic works called?", a: ["Drawing", "Painting", "Print Making", "Sculpting"], c: 2 }
+        ];
+
+        const quizForm = document.getElementById('quiz-form');
+        questions.forEach((q, i) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `q-card-${i}`;
+            card.innerHTML = `
+                <div class="question-text">${i + 1}. ${q.q}</div>
+                ${q.a.map((opt, oi) => `
+                    <label class="option" id="label-${i}-${oi}">
+                        <input type="radio" name="q${i}" value="${oi}"> ${opt}
+                    </label>
+                `).join('')}
+                <div id="feedback-${i}" class="feedback"></div>
+            `;
+            quizForm.appendChild(card);
+        });
+
+        function submitExam() {
+            let score = 0;
+            questions.forEach((q, i) => {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const feedback = document.getElementById(`feedback-${i}`);
+                const card = document.getElementById(`q-card-${i}`);
+                
+                if (selected && parseInt(selected.value) === q.c) {
+                    score++;
+                    card.classList.add('correct');
+                    feedback.innerHTML = "Correct!";
+                } else {
+                    card.classList.add('incorrect');
+                    feedback.innerHTML = `Incorrect. Correct answer: <span class="correct-answer-text">${q.a[q.c]}</span>`;
+                }
+            });
+
+            document.getElementById('final-score').innerText = `You scored ${score} out of ${questions.length}`;
+            document.getElementById('results').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
